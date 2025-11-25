@@ -1,41 +1,39 @@
-pipeline{
-  agent any
-  tools{
-    maven 'devops_maven'
-  }
-  triggers{
-    githubPush()
-  }
-  enviroment{
-    POM="jugandoArreglos/pom.xml"
-  }
-  stages{
-    stage('Descarga'){
-      steps{
-        git url:'https://github.com/LALOdelfin/JugandoArreglos.git', branch:'main'
-      }
+pipeline {
+    agent any
+    tools {
+        maven 'devops_maven'
     }
-    stage('Compilacion'){
-      steps{
-        sh 'mvn -f $POM -B package'
-
-      }
+    triggers {
+        githubPush()
     }
-    stage('Prueba'){
-      steps{
-        sh 'mvn -f $POM test'
-      }
-      post{
-        always{
-          junit 'jugandoArreglos/target/surefire-reports/*.xml'
+    environment {
+        POM = "jugandoArreglos/pom.xml"
+    }
+    stages {
+        stage('Descarga') {
+            steps {
+                git url: 'https://https://github.com/LALOdelfin/JugandoArreglos.git', branch: 'main'
+            }
         }
-      }
+        stage('Compilacion') {
+            steps {
+                sh 'mvn -f $POM -B package'
+            }
+        }
+        stage('Prueba') {
+            steps {
+                sh 'mvn -f $POM test'
+            }
+            post {
+                always {
+                    junit 'jugandoArreglos/target/surefire-reports/*.xml'
+                }
+            }
+        }
+        stage('Empaquetado') {
+            steps {
+                archiveArtifacts artifacts: 'jugandoArreglos/target/*.jar', fingerprint: true
+            }
+        }
     }
-    stage('Empaquetado'){
-      steps{
-        archiveArtifacts artifacts: 'jugandoArreglos/target/*.jar', fingerprint:true
-      }
-    }
-  }
-
 }
