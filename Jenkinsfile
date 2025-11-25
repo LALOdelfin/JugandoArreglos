@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Descarga') {
             steps {
-                git url: 'https://https://github.com/LALOdelfin/JugandoArreglos.git', branch: 'main'
+                git url: 'https://github.com/LALOdelfin/JugandoArreglos.git', branch: 'main'
             }
         }
         stage('Compilacion') {
